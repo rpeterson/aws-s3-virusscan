@@ -36,6 +36,28 @@ poller.poll do |msg|
       end
       if system('clamscan /tmp/target')
         log.debug "s3://#{bucket}/#{key} was scanned without findings"
+        sns.publish(
+          topic_arn: conf['topic'],
+          message: "s3://#{bucket}/#{key} is infected",
+          subject: "s3-virusscan s3://#{bucket}",
+          message_attributes: {
+            "key" => {
+              data_type: "String",
+              string_value: "s3://#{bucket}/#{key}"
+            },
+            "file" => {
+              data_type: "String",
+              string_value: "#{key}"
+            },
+            "bucket" => {
+              data_type: "String",
+              string_value: "#{bucket}"
+            },
+            "status" => {
+              data_type: "String",
+              string_value: "SCANNED"
+            }
+          }
       else
         if conf['delete']
           log.error "s3://#{bucket}/#{key} is infected, deleting..."
@@ -47,6 +69,18 @@ poller.poll do |msg|
               "key" => {
                 data_type: "String",
                 string_value: "s3://#{bucket}/#{key}"
+              },
+              "file" => {
+                data_type: "String",
+                string_value: "#{key}"
+              },
+              "bucket" => {
+                data_type: "String",
+                string_value: "#{bucket}"
+              },
+              "status" => {
+                data_type: "String",
+                string_value: "INFECTED"
               }
             }
           )
@@ -65,6 +99,19 @@ poller.poll do |msg|
               "key" => {
                 data_type: "String",
                 string_value: "s3://#{bucket}/#{key}"
+              },
+              ,
+              "file" => {
+                data_type: "String",
+                string_value: "#{key}"
+              },
+              "bucket" => {
+                data_type: "String",
+                string_value: "#{bucket}"
+              },
+              "status" => {
+                data_type: "String",
+                string_value: "INFECTED"
               }
             }
           )
