@@ -100,7 +100,6 @@ poller.poll do |msg|
                 data_type: "String",
                 string_value: "s3://#{bucket}/#{key}"
               },
-              ,
               "file" => {
                 data_type: "String",
                 string_value: "#{key}"
