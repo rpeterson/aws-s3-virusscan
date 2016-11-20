@@ -38,7 +38,7 @@ poller.poll do |msg|
         log.debug "s3://#{bucket}/#{key} was scanned without findings"
         sns.publish(
           topic_arn: conf['topic'],
-          message: JSON.stringify(record),
+          message: JSON.generate(record),
           subject: "s3-virusscan s3://#{bucket}",
           message_attributes: {
             "key" => {
@@ -64,7 +64,7 @@ poller.poll do |msg|
           log.error "s3://#{bucket}/#{key} is infected, deleting..."
           sns.publish(
             topic_arn: conf['topic'],
-            message: JSON.stringify(record),
+            message: JSON.generate(record),
             subject: "s3-virusscan s3://#{bucket}",
             message_attributes: {
               "key" => {
@@ -94,7 +94,7 @@ poller.poll do |msg|
           log.error "s3://#{bucket}/#{key} is infected"
           sns.publish(
             topic_arn: conf['topic'],
-            message: JSON.stringify(record),
+            message: JSON.generate(record),
             subject: "s3-virusscan s3://#{bucket}",
             message_attributes: {
               "key" => {
