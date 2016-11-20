@@ -58,6 +58,7 @@ poller.poll do |msg|
               string_value: "SCANNED"
             }
           }
+        )
       else
         if conf['delete']
           log.error "s3://#{bucket}/#{key} is infected, deleting..."
